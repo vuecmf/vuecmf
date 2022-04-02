@@ -20,19 +20,35 @@ export default class MenuEvent extends BaseEvent{
     constructor() {
         super({}, {});
 
+        const action_type_list = store.getters.getActionTypeByTableName('menu')
+
         //若是内置类型不显示编辑按钮
-        this.editBtnVisible = (row: AnyObject): boolean => row.type != 10
+        this.editBtnVisible = (row: AnyObject): boolean => {
+            if(row.type == 10){
+                return false
+            }else{
+                return action_type_list.indexOf('save') != -1
+            }
+        }
 
         //若是内置类型不显示删除按钮
-        this.delBtnVisible = (row: AnyObject): boolean => row.type != 10
+        this.delBtnVisible = (row: AnyObject): boolean => {
+            if(row.type == 10){
+                return false
+            }else{
+                return action_type_list.indexOf('delete') != -1
+            }
+        }
 
         //表格事件配置
         this.table_event.tool_event = []
 
 
         //表格行事件权限控制
-        const action_type_list = store.getters.getActionTypeByTableName('menu')
-        this.table_event.row_event[0].visible = action_type_list.indexOf('save') != -1
+        if(typeof this.table_event.row_event != 'undefined'){
+            this.table_event.row_event[0].visible = action_type_list.indexOf('save') != -1
+        }
+
 
     }
 

@@ -86,6 +86,12 @@ export default defineComponent({
     text-align: center;
     cursor: pointer;
   }
+  .vuecmf-tabs-arrow{
+    height: 28px;
+  }
+  .vuecmf-tabs-menu{
+    padding-top: 4px;
+  }
   .vuecmf-tabs-main{
     flex-grow: 1;
     height: 32px;

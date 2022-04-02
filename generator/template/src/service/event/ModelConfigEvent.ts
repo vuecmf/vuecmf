@@ -18,14 +18,34 @@ export default class ModelConfigEvent extends BaseEvent{
     constructor(dataService: AnyObject,dataModel: AnyObject) {
         super(dataService, dataModel);
 
+        const model_config_action_type_list = store.getters.getActionTypeByTableName('model_config')
+
         //若是内置模型不显示编辑按钮
-        this.editBtnVisible = (row: AnyObject): boolean => row.type != 10
+        this.editBtnVisible = (row: AnyObject): boolean => {
+            if(row.type == 10){
+                return false
+            }else{
+                return model_config_action_type_list.indexOf('save') != -1
+            }
+        }
 
         //若是内置模型不显示删除按钮
-        this.delBtnVisible = (row: AnyObject): boolean => row.type != 10
+        this.delBtnVisible = (row: AnyObject): boolean => {
+            if(row.type == 10){
+                return false
+            }else{
+                return model_config_action_type_list.indexOf('delete') != -1
+            }
+        }
 
         //列表中每行的状态切换是否可用
-        this.statusDisabled = (row: AnyObject): boolean => row.type == 10
+        this.statusDisabled = (row: AnyObject): boolean => {
+            if(row.type == 10){
+                return false
+            }else{
+                return model_config_action_type_list.indexOf('save') != -1
+            }
+        }
 
         //表格事件配置
         this.table_event.tool_event = []
