@@ -63,6 +63,15 @@ export default abstract class BaseEvent{
             ]
         }
 
+        //列表中状态列的开关是否可用
+        this.statusDisabled = (row:AnyObject): boolean => {
+            if(typeof this.table_name != 'undefined' && ['menu','model_config'].indexOf(this.table_name as string) != -1 && row.type == 10){
+                return true
+            }else{
+                return action_type_list.indexOf('save') == -1
+            }
+        }
+
     }
 
 
@@ -74,7 +83,7 @@ export default abstract class BaseEvent{
     addSub = (selectRow:AnyObject, tableService: AnyObject): void => {
         tableService.addRow()
         tableService.loadDataService.loadTableField()
-        tableService.table_config.current_select_row.pid = selectRow.id.toString()
+        tableService.table_config.current_select_row.pid = selectRow.id
     }
 
 

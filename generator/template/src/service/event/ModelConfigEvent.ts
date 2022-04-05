@@ -41,9 +41,9 @@ export default class ModelConfigEvent extends BaseEvent{
         //列表中每行的状态切换是否可用
         this.statusDisabled = (row: AnyObject): boolean => {
             if(row.type == 10){
-                return false
+                return true
             }else{
-                return model_config_action_type_list.indexOf('save') != -1
+                return model_config_action_type_list.indexOf('save') == -1
             }
         }
 
