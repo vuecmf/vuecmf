@@ -121,7 +121,6 @@ export default class ModelConfigEvent extends BaseEvent{
                 this.dataService.secondDialogTableService.table_config.filter_form['model_id'] = selectRows.model_id
 
                 //获取关联模型信息的过滤设置
-                console.log('sel=', selectRows)
                 this.dataService.secondDialogTableService.table_config.field_filter['model_id'] = selectRows.model_id
             }
         )
@@ -254,7 +253,8 @@ export default class ModelConfigEvent extends BaseEvent{
      * @param selectRows
      */
     setFormRules = (selectRows:AnyObject): void => {
-        this.dataService.dialog_config.dlg_second.dialog_title = '设置表单验证'
+        const label = this.getFormLabel(selectRows.model_field_id)
+        this.dataService.dialog_config.dlg_second.dialog_title = '设置('+ label +')表单验证'
 
         this.initTable(
             this.dataService.dialog_config.secondDlgRef,
@@ -279,7 +279,8 @@ export default class ModelConfigEvent extends BaseEvent{
      * @param selectRows
      */
     setFormLinkage = (selectRows:AnyObject): void => {
-        this.dataService.dialog_config.dlg_second.dialog_title = '设置('+ selectRows.label +')表单联动'
+        const label = this.getFormLabel(selectRows.model_field_id)
+        this.dataService.dialog_config.dlg_second.dialog_title = '设置('+ label +')表单联动'
 
         this.initTable(
             this.dataService.dialog_config.secondDlgRef,
@@ -297,6 +298,24 @@ export default class ModelConfigEvent extends BaseEvent{
                 this.dataService.secondDialogTableService.table_config.field_filter['model_id'] = selectRows.model_id
             }
         )
+    }
+
+
+    /**
+     * 根据模型字段ID获取对应label名称
+     * @param model_field_id
+     */
+    private getFormLabel = (model_field_id: number): string => {
+        let label = ''
+        if(typeof this.dataService.dialogTableService.table_config != 'undefined' && typeof this.dataService.dialogTableService.table_config.form_info != 'undefined'){
+            const form_info: AnyObject = this.dataService.dialogTableService.table_config.form_info
+            Object.values(form_info).forEach((item) => {
+                if(item.field_id == model_field_id){
+                    label = item.label
+                }
+            })
+        }
+        return label
     }
 
 
