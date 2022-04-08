@@ -357,9 +357,30 @@ export default abstract class BaseEvent{
 
         if(this.current_model_config.value.type == 10){
             //若模型是内置类型，则不允许新增、编辑和删除
-            dlg_config.add_btn_visible = false
-            dlg_config.editBtnVisible = () => false
-            dlg_config.delBtnVisible = () => false
+            if(table_name == 'field_option'){
+                dlg_config.add_btn_visible = action_type_list.indexOf('save') != -1
+                dlg_config.editBtnVisible = (row: AnyObject): boolean => {
+                    if(row.type == 10){
+                        return false
+                    }else{
+                        return action_type_list.indexOf('save') != -1
+                    }
+                }
+
+                dlg_config.delBtnVisible = (row: AnyObject): boolean => {
+                    if(row.type == 10){
+                        return false
+                    }else{
+                        return action_type_list.indexOf('save') != -1
+                    }
+                }
+
+            }else{
+                dlg_config.add_btn_visible = false
+                dlg_config.editBtnVisible = () => false
+                dlg_config.delBtnVisible = () => false
+            }
+
         }else{
             //行新增和编辑功能权限控制
             dlg_config.add_btn_visible = action_type_list.indexOf('save') != -1
