@@ -132,7 +132,11 @@ export default abstract class Model {
      */
     public getApiUrl = (table_name: string,action_type: string): string => {
         const api_maps = store.getters.apiMaps
-        return api_maps[table_name][action_type]
+        if(typeof api_maps[table_name] != 'undefined' && typeof api_maps[table_name][action_type] != 'undefined'){
+            return api_maps[table_name][action_type]
+        }else{
+            return ''
+        }
     }
 
     /**

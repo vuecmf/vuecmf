@@ -21,12 +21,9 @@ export default class AdminEvent extends BaseEvent{
     constructor(dataService: AnyObject,dataModel: AnyObject) {
         super(dataService, dataModel);
 
-        //行删除按钮是否显示
-        this.delBtnVisible = (row: AnyObject): boolean => row.is_super != 10
-
         //表格事件配置
         this.table_event.tool_event = [
-           // { label: '添加管理员', type:'primary', event: this.add }
+            // { label: '添加管理员', type:'primary', event: this.add }
         ]
         //表格行事件配置
         this.table_event.row_event = [
@@ -38,6 +35,16 @@ export default class AdminEvent extends BaseEvent{
 
         //表格行事件权限控制
         const action_type_list = store.getters.getActionTypeByTableName('admin')
+
+        //行删除按钮是否显示
+        this.delBtnVisible = (row: AnyObject): boolean => {
+            if(row.is_super != 10){
+                return action_type_list.indexOf('delete') != -1
+            }else{
+                return false
+            }
+        }
+
         this.table_event.row_event.forEach((item: AnyObject) => {
             if(item.label == '设置角色'){
                 item.visible = action_type_list.indexOf('assign_role') != -1
