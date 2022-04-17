@@ -69,7 +69,7 @@ export default class ContentService extends BaseService{
         savePermission: () => false,                  //保存权限项事件
     })
 
-    
+
     //分配角色或用户管理相关设置
     assign_config = reactive({
         set_assign_dlg: false,                        //是否显示设置用户或对话框
@@ -249,7 +249,7 @@ export default class ContentService extends BaseService{
 
 
     /**
-     * 一级弹窗(首次弹窗)中表格数据加载前的回调函数，获取表格中服务类实例（如模型设置）
+     * 一级弹窗中表格数据加载前的回调函数，获取表格中服务类实例（如模型设置）
      * @param tableService
      */
     dialogBeforeLoadTable = (tableService: AnyObject): void => {
@@ -276,6 +276,8 @@ export default class ContentService extends BaseService{
 
         //过滤设置
         if(typeof this.table_config.current_row != 'undefined' && router.currentRoute.value.meta.table_name == 'model_config'){
+            console.log('二级弹窗加载前', this.table_config.current_row, this.dialog_config.current_table_name, this.secondDialogTableService.table_config)
+
             //模型设置中的二级弹窗列表的搜索表单初始化
             this.secondDialogTableService.table_config.filter_form['model_id'] = this.table_config.current_row.model_id
 
@@ -284,6 +286,7 @@ export default class ContentService extends BaseService{
                     this.secondDialogTableService.table_config.filter_form['model_form_id'] = this.table_config.current_row.id
                     break;
                 case 'model_relation':
+                case 'field_option':
                     this.secondDialogTableService.table_config.filter_form['model_field_id'] = this.table_config.current_row.id
                     break;
                 default:
@@ -339,8 +342,10 @@ export default class ContentService extends BaseService{
         Object.keys(linkage).forEach((field_id) => {
             let form_field_name = ''
             const form_info:AnyObject = tableService.table_config.form_info
+            const form_field_info:AnyObject = []  //表单字段信息
             Object.values(form_info).forEach((form_item) => {
                 if(form_item.field_id == field_id) form_field_name = form_item.field_name
+                form_field_info[form_item.field_id] = form_item.field_name
             })
 
             const sel_val = select_row != null && typeof select_row[form_field_name] != 'undefined' ? select_row[form_field_name] : ''
@@ -353,7 +358,36 @@ export default class ContentService extends BaseService{
                 this.dataModel.request(item.action_table_name, item.action_type, {data: data}).then((res:AnyObject)=>{
                     if(res.status == 200){
                         if(res.data.code == 0){
-                            tableService.table_config.relation_info.options[item.relation_field_id] = res.data.data
+                            const form_list: number[] = []
+                            const res_list:AnyObject = res.data.data
+                            Object.values(res_list).forEach((row: AnyObject) => {
+                                form_list.push(row.id)
+                            })
+
+                            tableService.table_config.relation_info.options[item.relation_field_id] = res_list
+
+                            //先找到关联下拉框的字段名, 然后根据当前字段名找到当前选择的值，再在判断在拉取的下拉列表数据中是否存在， 不存在则删除当前选择的值
+                            const relation_field_name = typeof form_field_info[item.relation_field_id] != 'undefined' ? form_field_info[item.relation_field_id] : ''
+                            if(relation_field_name != '' && typeof select_row[relation_field_name] != 'undefined'){
+
+
+                                if(typeof select_row[relation_field_name] == 'object'){
+                                    const tmp_sel:number[] = []
+                                    if(select_row[relation_field_name] != null){
+                                        select_row[relation_field_name].forEach((sub_id:number) => {
+                                            if(form_list.indexOf(sub_id) != -1){
+                                                tmp_sel.push(sub_id)
+                                            }
+                                        })
+                                    }
+                                    select_row[relation_field_name] = tmp_sel
+                                }else{
+                                    if(form_list.indexOf(select_row[relation_field_name]) == -1){
+                                        select_row[relation_field_name] = null
+                                    }
+                                }
+                            }
+
                         }else{
                             this.message.error('获取下拉选项失败:' + res.data.msg)
                         }

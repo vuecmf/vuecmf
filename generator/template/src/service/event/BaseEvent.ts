@@ -239,27 +239,16 @@ export default abstract class BaseEvent{
      * 初始化列表
      * @param dlg_ref            弹窗ref
      * @param dlg_config            弹窗配置对象
-     * @param dialogTableService    弹窗中的列表服务类实例
      * @param table_name            模型表名
      * @param selectRows            当前选择的行数据
      * @param export_file_name      导出文件名
-     * @param callback              回调函数
      */
     initTable = (dlg_ref: AnyObject,
                  dlg_config: AnyObject,
-                 dialogTableService: AnyObject,
                  table_name: string,
                  selectRows: AnyObject,
                  export_file_name: string,
-                 callback: () => void
-                 ):void => {
-        //设置列表后端相关接口地址
-        const api_url = this.dataModel.getApiUrl(table_name, 'list')
-        const del_api_url = this.dataModel.getApiUrl(table_name, 'delete')
-        const import_api_url = this.dataModel.getApiUrl(table_name, 'save_all')
-        const save_api_url = this.dataModel.getApiUrl(table_name, 'save')
-
-        const download_filename = export_file_name + '(' + selectRows.label + ')'
+    ):void => {
 
         this.dataService.dialog_config.current_table_name = table_name
 
@@ -275,43 +264,20 @@ export default abstract class BaseEvent{
             this.dataService.resizeVuecmfTable()
         }
 
+
+        //设置当前选择的行数据, 供弹窗回调函数 dialogTableCallback 使用
+        this.dataService.table_config.current_row = selectRows
+
+        //设置列表后端相关接口地址
+        dlg_config.server = this.dataModel.getApiUrl(table_name, 'list')
+        dlg_config.del_server = this.dataModel.getApiUrl(table_name, 'delete')
+        dlg_config.import_server = this.dataModel.getApiUrl(table_name, 'save_all')
+        dlg_config.save_server = this.dataModel.getApiUrl(table_name, 'save')
+
+        //列表导出文件名
+        dlg_config.export_file_name = export_file_name + '(' + selectRows.label + ')'
+
         dlg_config.show_dlg = true
-
-        if(typeof dialogTableService.search == 'function'){
-            //弹窗二次弹出时处理
-
-            //刷新列表数据
-            //设置当前选择的模型ID
-            callback()
-
-            //设置列表后端相关接口地址
-            dialogTableService.table_config.api_url = api_url
-            dialogTableService.table_config.del_api_url = del_api_url
-            dialogTableService.import_config.import_api_url = import_api_url
-            dialogTableService.import_config.save_api_url = save_api_url
-
-            //列表导出文件名
-            dialogTableService.export_config.export_file_name = download_filename
-
-            dialogTableService.loadDataService.loadTableField() //加载列表表头字段
-            dialogTableService.search(); //加载列表数据
-
-        } else {
-            //弹窗首次创建时处理， 部分在 DataService 中dialogBeforeLoadTable 及 secondDialogBeforeLoadTable 回调中处理
-
-            //设置当前选择的行数据, 供弹窗回调函数 dialogTableCallback 使用
-            this.dataService.table_config.current_row = selectRows
-
-            //设置列表后端相关接口地址
-            dlg_config.server = api_url
-            dlg_config.del_server = del_api_url
-            dlg_config.import_server = import_api_url
-            dlg_config.save_server = save_api_url
-
-            //列表导出文件名
-            dlg_config.export_file_name = download_filename
-
-        }
 
     }
 
@@ -326,8 +292,6 @@ export default abstract class BaseEvent{
         const dlg_header = dlg_dom.querySelector('.el-dialog__header')
         const dlg_body = dlg_dom.querySelector('.el-dialog__body')
         const table_header = dlg_body.querySelector('.el-row')
-        //102
-        //console.log()
         dlg_config.table_height = (dlg_body.clientHeight - table_header.clientHeight - dlg_header.clientHeight - 27).toString()
     }
 

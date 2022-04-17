@@ -89,13 +89,9 @@ export default class ModelConfigEvent extends BaseEvent{
         this.initTable(
             this.dataService.dialog_config.firstDlgRef,
             this.dataService.dialog_config.dlg_first,
-            this.dataService.dialogTableService,
             'model_field',
             selectRows,
-            '字段',
-            () => {
-                this.dataService.dialogTableService.table_config.filter_form['model_id'] = selectRows.id
-            }
+            '字段'
         )
 
     }
@@ -111,18 +107,9 @@ export default class ModelConfigEvent extends BaseEvent{
         this.initTable(
             this.dataService.dialog_config.secondDlgRef,
             this.dataService.dialog_config.dlg_second,
-            this.dataService.secondDialogTableService,
             'model_relation',
             selectRows,
-            '模型关联',
-            () => {
-                delete this.dataService.secondDialogTableService.table_config.filter_form['model_form_id']
-                this.dataService.secondDialogTableService.table_config.filter_form['model_field_id'] = selectRows.id
-                this.dataService.secondDialogTableService.table_config.filter_form['model_id'] = selectRows.model_id
-
-                //获取关联模型信息的过滤设置
-                this.dataService.secondDialogTableService.table_config.field_filter['model_id'] = selectRows.model_id
-            }
+            '模型关联'
         )
     }
 
@@ -136,18 +123,9 @@ export default class ModelConfigEvent extends BaseEvent{
         this.initTable(
             this.dataService.dialog_config.secondDlgRef,
             this.dataService.dialog_config.dlg_second,
-            this.dataService.secondDialogTableService,
             'field_option',
             selectRows,
-            '字段选项',
-            () => {
-                delete this.dataService.secondDialogTableService.table_config.filter_form['model_form_id']
-                this.dataService.secondDialogTableService.table_config.filter_form['model_field_id'] = selectRows.id
-                this.dataService.secondDialogTableService.table_config.filter_form['model_id'] = selectRows.model_id
-
-                //获取关联模型信息的过滤设置
-                this.dataService.secondDialogTableService.table_config.field_filter['model_id'] = selectRows.model_id
-            }
+            '字段选项'
         )
     }
 
@@ -165,15 +143,9 @@ export default class ModelConfigEvent extends BaseEvent{
         this.initTable(
             this.dataService.dialog_config.firstDlgRef,
             this.dataService.dialog_config.dlg_first,
-            this.dataService.dialogTableService,
             'model_index',
             selectRows,
-            '索引',
-            () => {
-                this.dataService.dialogTableService.table_config.filter_form['model_id'] = selectRows.id
-                //获取关联模型信息的过滤设置
-                this.dataService.dialogTableService.table_config.field_filter['model_id'] = selectRows.id
-            }
+            '索引'
         )
     }
 
@@ -190,13 +162,9 @@ export default class ModelConfigEvent extends BaseEvent{
         this.initTable(
             this.dataService.dialog_config.firstDlgRef,
             this.dataService.dialog_config.dlg_first,
-            this.dataService.dialogTableService,
             'model_action',
             selectRows,
-            '动作',
-            () => {
-                this.dataService.dialogTableService.table_config.filter_form['model_id'] = selectRows.id
-            }
+            '动作'
         )
     }
 
@@ -234,15 +202,9 @@ export default class ModelConfigEvent extends BaseEvent{
         this.initTable(
             this.dataService.dialog_config.firstDlgRef,
             this.dataService.dialog_config.dlg_first,
-            this.dataService.dialogTableService,
             'model_form',
             selectRows,
-            '表单',
-            () => {
-                this.dataService.dialogTableService.table_config.filter_form['model_id'] = selectRows.id
-                //获取关联模型信息的过滤设置
-                this.dataService.dialogTableService.table_config.field_filter['model_id'] = selectRows.id
-            }
+            '表单'
         )
     }
 
@@ -259,18 +221,9 @@ export default class ModelConfigEvent extends BaseEvent{
         this.initTable(
             this.dataService.dialog_config.secondDlgRef,
             this.dataService.dialog_config.dlg_second,
-            this.dataService.secondDialogTableService,
             'model_form_rules',
             selectRows,
-            '模型表单验证',
-            () => {
-                delete this.dataService.secondDialogTableService.table_config.filter_form['model_field_id']
-                this.dataService.secondDialogTableService.table_config.filter_form['model_form_id'] = selectRows.id
-                this.dataService.secondDialogTableService.table_config.filter_form['model_id'] = selectRows.model_id
-
-                //获取关联模型信息的过滤设置
-                this.dataService.secondDialogTableService.table_config.field_filter['model_id'] = selectRows.model_id
-            }
+            '模型表单验证'
         )
     }
 
@@ -285,18 +238,9 @@ export default class ModelConfigEvent extends BaseEvent{
         this.initTable(
             this.dataService.dialog_config.secondDlgRef,
             this.dataService.dialog_config.dlg_second,
-            this.dataService.secondDialogTableService,
             'model_form_linkage',
             selectRows,
-            '表单联动',
-            () => {
-                delete this.dataService.secondDialogTableService.table_config.filter_form['model_form_id']
-                this.dataService.secondDialogTableService.table_config.filter_form['model_field_id'] = selectRows.model_field_id
-                this.dataService.secondDialogTableService.table_config.filter_form['model_id'] = selectRows.model_id
-
-                //获取关联模型信息的过滤设置
-                this.dataService.secondDialogTableService.table_config.field_filter['model_id'] = selectRows.model_id
-            }
+            '表单联动'
         )
     }
 
