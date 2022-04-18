@@ -276,8 +276,6 @@ export default class ContentService extends BaseService{
 
         //过滤设置
         if(typeof this.table_config.current_row != 'undefined' && router.currentRoute.value.meta.table_name == 'model_config'){
-            console.log('二级弹窗加载前', this.table_config.current_row, this.dialog_config.current_table_name, this.secondDialogTableService.table_config)
-
             //模型设置中的二级弹窗列表的搜索表单初始化
             this.secondDialogTableService.table_config.filter_form['model_id'] = this.table_config.current_row.model_id
 
@@ -358,11 +356,16 @@ export default class ContentService extends BaseService{
                 this.dataModel.request(item.action_table_name, item.action_type, {data: data}).then((res:AnyObject)=>{
                     if(res.status == 200){
                         if(res.data.code == 0){
-                            const form_list: number[] = []
+                            const form_list: string[] = []
                             const res_list:AnyObject = res.data.data
-                            Object.values(res_list).forEach((row: AnyObject) => {
-                                form_list.push(row.id)
+
+                            Object.keys(res_list).forEach((key) => {
+                                if(typeof res_list[key].id == 'number'){
+                                    res_list[key].id = res_list[key].id.toString()
+                                }
+                                form_list.push(res_list[key].id)
                             })
+
 
                             tableService.table_config.relation_info.options[item.relation_field_id] = res_list
 
@@ -372,9 +375,9 @@ export default class ContentService extends BaseService{
 
 
                                 if(typeof select_row[relation_field_name] == 'object'){
-                                    const tmp_sel:number[] = []
+                                    const tmp_sel:string[] = []
                                     if(select_row[relation_field_name] != null){
-                                        select_row[relation_field_name].forEach((sub_id:number) => {
+                                        select_row[relation_field_name].forEach((sub_id:string) => {
                                             if(form_list.indexOf(sub_id) != -1){
                                                 tmp_sel.push(sub_id)
                                             }
