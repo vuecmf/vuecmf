@@ -240,7 +240,7 @@ export default class ContentService extends BaseService{
         if(router.currentRoute.value.meta.table_name == 'model_config'){
             //获取关联模型信息的过滤设置
             if(typeof this.table_config.current_row != 'undefined'){
-                tableService.table_config.field_filter['model_id'] = this.table_config.current_row.id
+                tableService.table_config.field_filter['model_id'] = this.table_config.current_row.id.toString()
             }else{
                 tableService.table_config.field_filter['model_id'] = 0;
             }
@@ -257,11 +257,11 @@ export default class ContentService extends BaseService{
 
         //模型配置中的 设置字段、设置动作及表单列表的 过滤设置
         if(router.currentRoute.value.meta.table_name == 'model_config' && typeof this.table_config.current_row != 'undefined'){
-            this.dialogTableService.table_config.filter_form['model_id'] = this.table_config.current_row.id
+            this.dialogTableService.table_config.filter_form['model_id'] = this.table_config.current_row.id.toString()
 
             if(['model_index','model_form'].indexOf(this.dialog_config.current_table_name) != -1){
                 //获取关联模型信息的过滤设置
-                this.dialogTableService.table_config.field_filter['model_id'] = this.table_config.current_row.id
+                this.dialogTableService.table_config.field_filter['model_id'] = this.table_config.current_row.id.toString()
             }
         }
     }
@@ -277,22 +277,22 @@ export default class ContentService extends BaseService{
         //过滤设置
         if(typeof this.table_config.current_row != 'undefined' && router.currentRoute.value.meta.table_name == 'model_config'){
             //模型设置中的二级弹窗列表的搜索表单初始化
-            this.secondDialogTableService.table_config.filter_form['model_id'] = this.table_config.current_row.model_id
+            this.secondDialogTableService.table_config.filter_form['model_id'] = this.table_config.current_row.model_id.toString()
 
             switch (this.dialog_config.current_table_name){
                 case 'model_form_rules':
-                    this.secondDialogTableService.table_config.filter_form['model_form_id'] = this.table_config.current_row.id
+                    this.secondDialogTableService.table_config.filter_form['model_form_id'] = this.table_config.current_row.id.toString()
                     break;
                 case 'model_relation':
                 case 'field_option':
-                    this.secondDialogTableService.table_config.filter_form['model_field_id'] = this.table_config.current_row.id
+                    this.secondDialogTableService.table_config.filter_form['model_field_id'] = this.table_config.current_row.id.toString()
                     break;
                 default:
-                    this.secondDialogTableService.table_config.filter_form['model_field_id'] = this.table_config.current_row.model_field_id
+                    this.secondDialogTableService.table_config.filter_form['model_field_id'] = this.table_config.current_row.model_field_id.toString()
             }
 
             //获取关联模型信息的过滤设置
-            this.secondDialogTableService.table_config.field_filter['model_id'] = this.table_config.current_row.model_id
+            this.secondDialogTableService.table_config.field_filter['model_id'] = this.table_config.current_row.model_id.toString()
 
         }
     }
@@ -357,15 +357,17 @@ export default class ContentService extends BaseService{
                     if(res.status == 200){
                         if(res.data.code == 0){
                             const form_list: string[] = []
-                            const res_list:AnyObject = res.data.data
+                            const res_list:AnyObject[] = []
 
-                            Object.keys(res_list).forEach((key) => {
-                                if(typeof res_list[key].id == 'number'){
-                                    res_list[key].id = res_list[key].id.toString()
+                            Object.keys(res.data.data).forEach((key) => {
+                                if(typeof res.data.data[key].id == 'number'){
+                                    res.data.data[key].id = res.data.data[key].id.toString()
                                 }
-                                form_list.push(res_list[key].id)
+                                form_list.push(res.data.data[key].id)
+                                res_list.push(res.data.data[key])
                             })
 
+                            console.log('res_list = ',res_list)
 
                             tableService.table_config.relation_info.options[item.relation_field_id] = res_list
 
