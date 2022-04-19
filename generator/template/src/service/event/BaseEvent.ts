@@ -87,61 +87,59 @@ export default abstract class BaseEvent{
     }
 
 
-
     /**
      * 权限列表选择模型名称事件
+     * @param value  bool 当前选择的值
+     * @param model_name string 模型名称
      */
-    modelNameCheckChange = ():false => {
-        if(typeof this.dataService.permission_config.checkedModelNameList != 'undefined'){
-            Object.keys(this.dataService.permission_config.checkedModelNameList).forEach((key) => {
-                if(typeof this.dataService.permission_config.checkedModelNameList != 'undefined' &&
-                    typeof this.dataService.permission_config.checkedModelNameList[key] != 'undefined' &&
-                    typeof this.dataService.permission_config.checkedActionList != 'undefined' &&
-                    typeof this.dataService.permission_config.permission_action_list != 'undefined'
-                ){
-                    if(this.dataService.permission_config.checkedModelNameList[key]){
-                        const action_list: string[] = []
-                        Object.keys(this.dataService.permission_config.permission_action_list[key]).forEach((action_id) => {
-                            action_list.push(action_id)
-                        })
-                        this.dataService.permission_config.checkedActionList[key] = action_list
-                    }else{
-                        this.dataService.permission_config.checkedActionList[key] = []
-                    }
+    modelNameCheckChange = (value: string, model_name: string):false => {
+        if(typeof this.dataService.permission_config.checkedActionList[model_name] != 'undefined'){
+            if(value){
+                //若模型名称是选中状态
+                const action_list: string[] = []
+                if(typeof this.dataService.permission_config.permission_action_list[model_name] == 'object'){
+                    Object.keys(this.dataService.permission_config.permission_action_list[model_name]).forEach((action_id) => {
+                        action_list.push(action_id)
+                    })
                 }
-            })
+                this.dataService.permission_config.checkedActionList[model_name] = action_list
+            }else{
+                this.dataService.permission_config.checkedActionList[model_name] = []
+            }
         }
+
         return false
     }
 
 
     /**
      * 权限项选择事件
+     * @param value array 当前选择的值
+     * @param model_name string 模型名称
      */
-    actionCheckChange = ():false => {
-        if(typeof this.dataService.permission_config.checkedModelNameList != 'undefined'){
-            Object.keys(this.dataService.permission_config.checkedModelNameList).forEach((key) => {
-                if(typeof this.dataService.permission_config.checkedModelNameList != 'undefined' &&
-                    typeof this.dataService.permission_config.checkedModelNameList[key] != 'undefined' &&
-                    typeof this.dataService.permission_config.checkedActionList != 'undefined' &&
-                    typeof this.dataService.permission_config.permission_action_list != 'undefined'
-                ){
-                    let action_list_num = 0
-                    Object.keys(this.dataService.permission_config.permission_action_list[key]).forEach(() => {
-                        action_list_num = action_list_num + 1
-                    })
+    actionCheckChange = (value: string[], model_name: string):false => {
+        if(typeof this.dataService.permission_config.checkedActionList == 'object' &&
+            typeof this.dataService.permission_config.checkedActionList[model_name] != 'undefined'
+        ){
+            this.dataService.permission_config.checkedActionList[model_name] = value
 
-                    const checkedCount = this.dataService.permission_config.checkedActionList[key].length
-
-                    this.dataService.permission_config.checkedModelNameList[key] = action_list_num === checkedCount
-
-                    if(typeof this.dataService.permission_config.modelNameIndeterminate != 'undefined'){
-                        this.dataService.permission_config.modelNameIndeterminate[key] = checkedCount > 0 && checkedCount < action_list_num
-                    }
-
-                }
+            //计算当前模型的动作总数
+            let action_list_num = 0
+            Object.keys(this.dataService.permission_config.permission_action_list[model_name]).forEach(() => {
+                action_list_num = action_list_num + 1
             })
+
+            //当前模型选中的动作数量
+            const checkedCount = value.length
+            //若选择数量与总数相等，则勾选上当前模型名称
+            this.dataService.permission_config.checkedModelNameList[model_name] = action_list_num === checkedCount
+            //若有选择但没有全选中的话，则当前模型名称设置为半勾选状态
+            if(typeof this.dataService.permission_config.modelNameIndeterminate != 'undefined'){
+                this.dataService.permission_config.modelNameIndeterminate[model_name] = checkedCount > 0 && checkedCount < action_list_num
+            }
+
         }
+
         return false
     }
 
@@ -180,10 +178,10 @@ export default abstract class BaseEvent{
 
                             Object.keys(res.data.data).forEach((index) => {
                                 checkedActionList[index] = res.data.data[index]
+                                this.actionCheckChange(checkedActionList[index], index)
                             })
 
                             this.dataService.permission_config.checkedActionList = checkedActionList
-                            this.actionCheckChange()
 
                         }else{
                             ElMessage.error(res.data.msg)

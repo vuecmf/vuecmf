@@ -63,10 +63,10 @@
     <template #content>
       <template :key="key" v-for="(item, key) in permission_action_list">
         <div class="main-checkbox">
-          <el-checkbox  v-model="checkedModelNameList[key]" :indeterminate="modelNameIndeterminate[key]" @change="modelNameCheckChange" >{{ key }}</el-checkbox>
+          <el-checkbox  v-model="checkedModelNameList[key]" :indeterminate="modelNameIndeterminate[key]" @change="(value) => modelNameCheckChange(value, key)" >{{ key }}</el-checkbox>
         </div>
         <div class="child-checkbox">
-          <el-checkbox-group v-model="checkedActionList[key]" @change="actionCheckChange">
+          <el-checkbox-group v-model="checkedActionList[key]" @change="(value) => actionCheckChange(value, key)">
             <el-checkbox :key="action_id" :label="action_id" v-for="(action_name, action_id) in item">{{ action_name }}</el-checkbox>
           </el-checkbox-group>
         </div>
@@ -283,44 +283,10 @@ export default defineComponent({
   .el-checkbox{ height: 26px; margin: 0 6px 2px 0; width: 200px; overflow: hidden; text-overflow: ellipsis; }
 }
 
-
-
 </style>
 
 <style lang="scss">
 .cell{
   .el-button{ margin: 3px;}
 }
-
-
-/*.el-dialog__header{
-  padding: 10px 15px 0;
-  position: relative;
-}
-.el-dialog__headerbtn{
-  top: 10px;
-  right: 15px;
-  width: 22px;
-  height: 22px;
-}
-.el-dialog__title{
-  font-size: 15px;
-  line-height: 16px;
-}
-.screen_btn {
-  color: var(--el-color-info);
-  position: absolute;
-  right: 28px;
-  top: 12px;
-  cursor: pointer;
-  font-size: 13px;
-}
-.screen_btn:hover{
-  color: var(--el-color-primary);
-}
-
-.el-dialog__body{
-  padding: 15px;
-}*/
-
 </style>

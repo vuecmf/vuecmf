@@ -15,7 +15,7 @@ module.exports = (api, options, rootOptions) => {
     // 修改 `package.json` 里的字段
     api.extendPackage({
         name: `${project_name}`,
-        version: "2.0.2",
+        version: "2.0.3",
         description: "VueCMF是一款完全开源免费的内容管理快速开发框架。2.0+版本使用vue3、Element Plus和TypeScript构建，后端API基于ThinkPHP6开发。可用于快速开发CMS、CRM、WMS、OMS、ERP等管理系统，开发简单、高效易用，极大减少系统的开发周期和研发成本！甚至不用写一行代码使用VueCMF就能设计出功能强大的后台管理系统。",
         keyword: "vuecmf-web vuecmf vue3 vuecmf开发框架",
         author: "vuecmf <tulihua2004@126.com>",
