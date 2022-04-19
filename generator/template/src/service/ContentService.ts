@@ -367,15 +367,11 @@ export default class ContentService extends BaseService{
                                 res_list.push(res.data.data[key])
                             })
 
-                            console.log('res_list = ',res_list)
-
                             tableService.table_config.relation_info.options[item.relation_field_id] = res_list
 
                             //先找到关联下拉框的字段名, 然后根据当前字段名找到当前选择的值，再在判断在拉取的下拉列表数据中是否存在， 不存在则删除当前选择的值
                             const relation_field_name = typeof form_field_info[item.relation_field_id] != 'undefined' ? form_field_info[item.relation_field_id] : ''
                             if(relation_field_name != '' && typeof select_row[relation_field_name] != 'undefined'){
-
-
                                 if(typeof select_row[relation_field_name] == 'object'){
                                     const tmp_sel:string[] = []
                                     if(select_row[relation_field_name] != null){

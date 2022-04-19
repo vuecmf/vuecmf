@@ -253,11 +253,29 @@ export default class ModelConfigEvent extends BaseEvent{
         let label = ''
         if(typeof this.dataService.dialogTableService.table_config != 'undefined' && typeof this.dataService.dialogTableService.table_config.form_info != 'undefined'){
             const form_info: AnyObject = this.dataService.dialogTableService.table_config.form_info
+
             Object.values(form_info).forEach((item) => {
                 if(item.field_id == model_field_id){
                     label = item.label
                 }
             })
+
+            //若没有找到，就从列表字段信息中关联信息（relation_info）中的字段选项（options）查找标签
+            if(label == ''){
+                let field_id = ''
+                Object.values(form_info).forEach((item) => {
+                    if(item.field_name == 'model_field_id'){
+                        field_id = item.field_id
+                    }
+                })
+
+                if(field_id != '' && typeof this.dataService.dialogTableService.table_config.relation_info.options[field_id] == 'object'){
+                    this.dataService.dialogTableService.table_config.relation_info.options[field_id].forEach((row:AnyObject) => {
+                        if(row.id == model_field_id)  label = row.label
+                    })
+                }
+
+            }
         }
         return label
     }
