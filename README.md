@@ -1,4 +1,4 @@
-# vuecmf-web
+# vuecmf
 VueCMF内容管理快速开发框架v2(前端模板)
 
 # 项目介绍
