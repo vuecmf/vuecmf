@@ -21,7 +21,7 @@ npm install -g yarn
 yarn global add @vue/cli
 ```
 
-## 使用vuecmf-web模板创建项目
+## 使用vuecmf模板创建项目
 ```
 vue create --preset vuecmf/vuecmf my-project
 ```
