@@ -136,6 +136,9 @@ export default defineComponent({
 .el-breadcrumb__separator.el-icon{
   color: #909399;
 }
+.el-dialog__headerbtn{
+  right: -5px !important;
+}
 </style>
 <style lang="scss" scoped>
 @import '@/assets/vuecmf-base.scss';
