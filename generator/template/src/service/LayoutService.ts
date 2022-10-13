@@ -355,9 +355,14 @@ export default class LayoutService extends BaseService{
      */
     selectMainMenu = (index: string):void => {
         //加载侧边菜单
-        if(typeof this.nav_menu_list.value != 'undefined' && typeof this.nav_menu_list.value[index] != 'undefined'){
-            this.aside_menu_list.value = this.nav_menu_list.value[index].children
+        if(this.nav_menu_list.value != undefined) {
+            Object.keys(this.nav_menu_list.value).forEach((key) => {
+                if(this.nav_menu_list.value != undefined && this.nav_menu_list.value[key] != undefined && this.nav_menu_list.value[key].mid == index){
+                    this.aside_menu_list.value = this.nav_menu_list.value[key].children
+                }
+            })
         }
+
         //加载面包屑列表
         this.setBreadcrumbList()
     }
