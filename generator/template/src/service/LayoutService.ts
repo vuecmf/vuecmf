@@ -65,9 +65,9 @@ export default class LayoutService extends BaseService{
                 //默认第一个主菜单项选中
                 if(typeof this.nav_menu_list.value != 'undefined'){
                     const main_menu_keys = Object.keys(this.nav_menu_list.value)
-                    if(typeof main_menu_keys[0] != 'undefined'){
-                        this.main_menu_active.value = main_menu_keys[0]
-                        this.selectMainMenu(this.main_menu_active.value as string)
+                    if(main_menu_keys.length > 0) {
+                        this.main_menu_active.value = this.nav_menu_list.value[main_menu_keys[0]].mid
+                        this.selectMainMenu(this.main_menu_active.value)
                     }
                 }
             })
@@ -75,11 +75,14 @@ export default class LayoutService extends BaseService{
             return Promise.resolve('router loaded')
 
         }).catch((res) => {
-
             if(res.code == 1003){
                 this.vuecmfException(res.msg)
-            }else{
+            }else if(res.msg != undefined){
                 ElMessage.error(res.msg)
+                return Promise.reject('')
+            }else{
+                console.log(res)
+                ElMessage.error(res.toString())
                 return Promise.reject('')
             }
 
@@ -94,7 +97,7 @@ export default class LayoutService extends BaseService{
     loadRouter = (menuList: AnyObject|undefined):void => {
         if(typeof menuList != 'undefined'){
             for(const key in menuList){
-                if(typeof menuList[key].component_tpl == 'undefined' && typeof menuList[key].children != 'undefined'){
+                if((typeof menuList[key].component_tpl == 'undefined' || menuList[key].component_tpl == "") && typeof menuList[key].children != 'undefined' && menuList[key].children != null){
                     this.loadRouter(menuList[key].children)
                 }else{
                     router.addRoute('home', {
@@ -362,7 +365,6 @@ export default class LayoutService extends BaseService{
                 }
             })
         }
-
         //加载面包屑列表
         this.setBreadcrumbList()
     }
