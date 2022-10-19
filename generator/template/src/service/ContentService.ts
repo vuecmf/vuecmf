@@ -337,6 +337,8 @@ export default class ContentService extends BaseService{
     loadFormOption = (tableService:AnyObject, select_row: AnyObject): void => {
         const linkage:AnyObject = tableService.table_config.relation_info.linkage
 
+        console.log('select_row==', select_row)
+
         Object.keys(linkage).forEach((field_id) => {
             let form_field_name = ''
             const form_info:AnyObject = tableService.table_config.form_info
@@ -363,7 +365,7 @@ export default class ContentService extends BaseService{
                                 if(typeof res.data.data[key].id == 'number'){
                                     res.data.data[key].id = res.data.data[key].id.toString()
                                 }
-                                form_list.push(res.data.data[key].id)
+                                form_list.push(res.data.data[key].value)
                                 res_list.push(res.data.data[key])
                             })
 
@@ -392,9 +394,14 @@ export default class ContentService extends BaseService{
                         }else{
                             this.message.error('获取下拉选项失败:' + res.data.msg)
                         }
+
                     }else{
                         this.vuecmfException('获取下拉选项失败')
                     }
+
+                    console.log('se2==', select_row)
+                    tableService.import_config.edit_form_ref.validate()
+
                 })
             })
         })
