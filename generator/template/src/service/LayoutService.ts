@@ -97,7 +97,7 @@ export default class LayoutService extends BaseService{
     loadRouter = (menuList: AnyObject|undefined):void => {
         if(typeof menuList != 'undefined'){
             for(const key in menuList){
-                if((typeof menuList[key].component_tpl == 'undefined' || menuList[key].component_tpl == "") && typeof menuList[key].children != 'undefined' && menuList[key].children != null){
+                if(typeof menuList[key].children != 'undefined' && menuList[key].children != null){
                     this.loadRouter(menuList[key].children)
                 }else{
                     router.addRoute('home', {
@@ -144,6 +144,7 @@ export default class LayoutService extends BaseService{
      * 设置当前选中的Tab在可见区域
      */
     private tabVisible = ():void => {
+        if(this.vuecmf_tabs.value == undefined) return
         const tabs_main_width = this.vuecmf_tabs.value.$refs.vuecmf_tabs_main.offsetWidth
         if((this.current_tab_index.value as number + 1) * this.tag_width.value > tabs_main_width){
             this.scroll_nun.value = -(this.current_tab_index.value as number )
@@ -254,6 +255,7 @@ export default class LayoutService extends BaseService{
      * @param event_name  事件名
      */
     autoTabArrow = (event_name?: string):void => {
+        if(this.vuecmf_tabs.value == undefined) return
         const tabs_wrap_width = this.vuecmf_tabs.value.$refs.vuecmf_tabs_wrap.offsetWidth
         const tabs_main_width = this.vuecmf_tabs.value.$refs.vuecmf_tabs_main.offsetWidth
 

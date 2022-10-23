@@ -56,7 +56,7 @@ export default class RolesEvent extends BaseEvent{
     addSub = (selectRow:AnyObject, tableService: AnyObject): void => {
         tableService.addRow()
         tableService.loadDataService.loadTableField()
-        tableService.table_config.current_select_row.pid = selectRow.id.toString()
+        tableService.table_config.current_select_row.pid = selectRow.id
     }
 
     /**

@@ -337,8 +337,6 @@ export default class ContentService extends BaseService{
     loadFormOption = (tableService:AnyObject, select_row: AnyObject): void => {
         const linkage:AnyObject = tableService.table_config.relation_info.linkage
 
-        console.log('select_row==', select_row)
-
         Object.keys(linkage).forEach((field_id) => {
             let form_field_name = ''
             const form_info:AnyObject = tableService.table_config.form_info
@@ -415,7 +413,6 @@ export default class ContentService extends BaseService{
                             this.vuecmfException('获取下拉选项失败')
                         }
 
-                        console.log('se2==', select_row)
                         tableService.import_config.edit_form_ref.validate()
 
                     })

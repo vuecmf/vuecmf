@@ -97,8 +97,8 @@
     </template>
     <template #footer>
       <span class="dialog-footer">
-        <el-button size="small" @click="set_assign_dlg = false">取消</el-button>
-        <el-button size="small" type="primary" @click="saveAssignData">保存</el-button>
+        <el-button  @click="set_assign_dlg = false">取消</el-button>
+        <el-button  type="primary" @click="saveAssignData">保存</el-button>
       </span>
     </template>
   </vuecmf-dialog>
