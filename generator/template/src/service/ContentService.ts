@@ -17,8 +17,10 @@ import DefaultEvent from "@/service/event/DefaultEvent";
 import RolesEvent from "@/service/event/RolesEvent";
 import AdminEvent from "@/service/event/AdminEvent";
 import ModelConfigEvent from "@/service/event/ModelConfigEvent";
+import AppConfigEvent from "@/service/event/AppConfigEvent";
 
 import store from "@/store";
+
 
 /**
  * 内容服务类
@@ -70,14 +72,14 @@ export default class ContentService extends BaseService{
     })
 
 
-    //分配角色或用户管理相关设置
+    //分配角色/用户/模型 管理相关设置
     assign_config = reactive({
-        set_assign_dlg: false,                        //是否显示设置用户或对话框
+        set_assign_dlg: false,                        //是否显示设置对话框
         assign_dlg_title: '',                         //对话框标题
-        all_data: [],                                 //所有用户或角色
-        assigned_data: [],                            //已分配用户或角色
+        all_data: [],                                 //所有用户/角色/模型
+        assigned_data: [],                            //已分配用户/角色/模型
 
-        saveAssignData: () => false,                  //保存分配的用户或角色
+        saveAssignData: () => false,                  //保存分配的用户/角色/模型
     })
 
     //模型设置管理相关配置
@@ -186,6 +188,9 @@ export default class ContentService extends BaseService{
                 break;
             case 'model_config':
                 this.event_obj.value = new ModelConfigEvent(this, this.dataModel)
+                break;
+            case 'app_config':
+                this.event_obj.value = new AppConfigEvent()
                 break;
             default:
                 this.event_obj.value = new DefaultEvent()
