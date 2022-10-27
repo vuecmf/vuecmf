@@ -57,7 +57,7 @@ export default class AppConfigEvent extends BaseEvent{
                 this.dataService.assign_config.all_data = res.data.data
 
                 //获取已分配的模型
-                this.dataModel.getAssignModels(this.table_name, { app_name: this.current_app.app_name }).then((res2:AnyObject) => {
+                this.dataModel.getAssignModels(this.table_name, { app_id: this.current_app.id }).then((res2:AnyObject) => {
                     if(res2.status == 200 && res2.data.code == 0){
                         this.dataService.assign_config.assigned_data = res2.data.data
                         this.dataService.assign_config.set_assign_dlg = true
@@ -70,8 +70,25 @@ export default class AppConfigEvent extends BaseEvent{
                 ElMessage.error(res.data.msg)
             }
         })
+    }
 
+    /**
+     * 保存应用已分配的模型
+     */
+    saveAssignModels = (): false => {
+        this.dataModel.saveAssignModels(this.table_name, {
+            app_id: this.current_app.id,
+            model_id_list: this.dataService.assign_config.assigned_data
+        }).then((res:AnyObject) => {
+            if(res.status == 200 && res.data.code == 0){
+                ElMessage.success(res.data.msg)
+                this.dataService.assign_config.set_assign_dlg = false
+            }else{
+                ElMessage.error(res.data.msg)
+            }
+        })
 
+        return false
     }
 
 

@@ -122,6 +122,15 @@ export default class DataModel extends BaseModel{
         return this.request(table_name, 'get_models', {data: data} )
     }
 
+    /**
+     * 保存应用分配的模型
+     * @param table_name 模型表名
+     * @param data 提交的数据
+     */
+    public saveAssignModels = (table_name: string, data:AnyObject): Promise<AnyObject> => {
+        return this.request(table_name, 'assign_model', {data: data} )
+    }
+
 
     /**
      * 退出系统
