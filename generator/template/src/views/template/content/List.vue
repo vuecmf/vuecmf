@@ -80,7 +80,7 @@
     </template>
   </vuecmf-dialog>
 
-  <!-- 设置用户或角色 -->
+  <!-- 设置用户/角色/模型 -->
   <vuecmf-dialog :model_value="set_assign_dlg" :title="assign_dlg_title" @updateVisible="showSetAssignDlg">
     <template #content>
       <el-transfer
@@ -98,7 +98,7 @@
     <template #footer>
       <span class="dialog-footer">
         <el-button  @click="set_assign_dlg = false">取消</el-button>
-        <el-button  type="primary" @click="saveAssignData">保存</el-button>
+        <el-button  type="primary" @click="saveAssignData" :disabled="is_internal">保存</el-button>
       </span>
     </template>
   </vuecmf-dialog>
@@ -226,6 +226,7 @@ const {
   assign_dlg_title,
   all_data,
   assigned_data,
+  is_internal,
   //事件
   saveAssignData,
 } = service.getConfig('assign_config')

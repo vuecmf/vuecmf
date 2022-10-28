@@ -10,15 +10,45 @@
 import BaseEvent from "@/service/event/BaseEvent";
 import {AnyObject} from "@/typings/vuecmf";
 import {ElMessage} from "element-plus";
+import store from "@/store";
 
 
 export default class AppConfigEvent extends BaseEvent{
     current_app: AnyObject //当前选择的应用信息
 
-    constructor() {
-        super({}, {});
+    constructor(dataService: AnyObject,dataModel: AnyObject) {
+        super(dataService, dataModel);
 
         this.current_app = {}
+
+        const app_config_action_type_list = store.getters.getActionTypeByTableName('app_config')
+
+        //若是内置模型不显示编辑按钮
+        this.editBtnVisible = (row: AnyObject): boolean => {
+            if(row.type == 10){
+                return false
+            }else{
+                return app_config_action_type_list.indexOf('save') != -1
+            }
+        }
+
+        //若是内置模型不显示删除按钮
+        this.delBtnVisible = (row: AnyObject): boolean => {
+            if(row.type == 10){
+                return false
+            }else{
+                return app_config_action_type_list.indexOf('delete') != -1
+            }
+        }
+
+        //列表中每行的状态切换是否可用
+        this.statusDisabled = (row: AnyObject): boolean => {
+            if(row.type == 10){
+                return true
+            }else{
+                return app_config_action_type_list.indexOf('save') == -1
+            }
+        }
 
         //表格事件配置
         this.table_event.tool_event = [
@@ -37,7 +67,7 @@ export default class AppConfigEvent extends BaseEvent{
      * 是否显示表格行事件按钮
      * @param row
      */
-    showCallback = (row: AnyObject): boolean => row.type != 10
+    showCallback = (row: AnyObject): boolean => true
 
     /**
      * 打开设置模型对话框
@@ -47,6 +77,7 @@ export default class AppConfigEvent extends BaseEvent{
         this.current_app = selectRow
         this.dataService.assign_config.assigned_data = []
         this.dataService.assign_config.assign_dlg_title = '设置(' + this.current_app.app_name + ')角色'
+        this.dataService.assign_config.is_internal = this.current_app.type == 10
 
         this.dataModel.getAllModels(this.table_name).then((res:AnyObject) => {
             if(res.status == 200 && res.data.code == 0){

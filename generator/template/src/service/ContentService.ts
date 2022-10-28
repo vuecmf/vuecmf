@@ -78,6 +78,7 @@ export default class ContentService extends BaseService{
         assign_dlg_title: '',                         //对话框标题
         all_data: [],                                 //所有用户/角色/模型
         assigned_data: [],                            //已分配用户/角色/模型
+        is_internal: false,                           //是否为内置功能
 
         saveAssignData: () => false,                  //保存分配的用户/角色/模型
     })
@@ -190,7 +191,7 @@ export default class ContentService extends BaseService{
                 this.event_obj.value = new ModelConfigEvent(this, this.dataModel)
                 break;
             case 'app_config':
-                this.event_obj.value = new AppConfigEvent()
+                this.event_obj.value = new AppConfigEvent(this, this.dataModel)
                 this.permission_config.modelNameCheckChange = this.event_obj.value.modelNameCheckChange
                 this.permission_config.actionCheckChange = this.event_obj.value.actionCheckChange
                 this.assign_config.saveAssignData = this.event_obj.value.saveAssignModels
