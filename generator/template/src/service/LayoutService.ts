@@ -103,7 +103,7 @@ export default class LayoutService extends BaseService{
                     router.addRoute('home', {
                         path: menuList[key].mid,
                         component: () => import('@/views/' + menuList[key].component_tpl),
-                        name: menuList[key].title,
+                        name: menuList[key].path_name.join('-'),
                         meta: {
                             default_action_type: menuList[key].default_action_type, //模型的默认动作类型
                             table_name: menuList[key].table_name,  //模型表名

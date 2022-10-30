@@ -76,7 +76,7 @@ export default class AppConfigEvent extends BaseEvent{
     setModel = (selectRow:AnyObject): void => {
         this.current_app = selectRow
         this.dataService.assign_config.assigned_data = []
-        this.dataService.assign_config.assign_dlg_title = '设置(' + this.current_app.app_name + ')角色'
+        this.dataService.assign_config.assign_dlg_title = '设置(' + this.current_app.app_name + ')模型'
         this.dataService.assign_config.is_internal = this.current_app.type == 10
 
         this.dataModel.getAllModels(this.table_name).then((res:AnyObject) => {

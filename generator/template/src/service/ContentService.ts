@@ -345,7 +345,6 @@ export default class ContentService extends BaseService{
      */
     loadFormOption = (tableService:AnyObject, select_row: AnyObject): void => {
         const linkage:AnyObject = tableService.table_config.relation_info.linkage
-
         Object.keys(linkage).forEach((field_id) => {
             let form_field_name = ''
             const form_info:AnyObject = tableService.table_config.form_info
@@ -374,7 +373,6 @@ export default class ContentService extends BaseService{
             }else{
                 const data:AnyObject = {}
                 data[form_field_name] = sel_val
-
 
                 const linkage_list:AnyObject = linkage[field_id]
 
@@ -438,6 +436,16 @@ export default class ContentService extends BaseService{
      * @param select_row
      */
     loadForm = (tableService: AnyObject, select_row: AnyObject): boolean => {
+        if(this.table_config.current_row != undefined) {
+            if(typeof select_row.model_id != 'undefined' && this.table_config.current_row.model_id != undefined){
+                select_row.model_id = this.table_config.current_row.model_id
+            }
+            if(typeof select_row.model_field_id != 'undefined' && this.table_config.current_row.id != undefined){
+                select_row.model_field_id = this.table_config.current_row.id
+            }
+
+
+        }
         this.loadFormOption(tableService, select_row)
 
         //设置表单中组件的change事件回调函数， 如在联动下拉框中使用
