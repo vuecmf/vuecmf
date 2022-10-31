@@ -356,21 +356,7 @@ export default class ContentService extends BaseService{
 
             const sel_val = select_row != null && typeof select_row[form_field_name] != 'undefined' ? select_row[form_field_name] : ''
 
-            if(sel_val == ''){
-                const linkage_list:AnyObject = linkage[field_id]
-                Object.values(linkage_list).forEach((item)=>{
-                    tableService.table_config.relation_info.options[item.relation_field_id] = []
-                    const relation_field_name = typeof form_field_info[item.relation_field_id] != 'undefined' ? form_field_info[item.relation_field_id] : ''
-                    if(relation_field_name != '' && typeof select_row[relation_field_name] != 'undefined') {
-                        if(typeof select_row[relation_field_name] == 'object'){
-                            select_row[relation_field_name] = []
-                        }else{
-                            select_row[relation_field_name] = null
-                        }
-                    }
-                })
-
-            }else{
+            if(sel_val != ''){
                 const data:AnyObject = {}
                 data[form_field_name] = sel_val
 
@@ -419,14 +405,16 @@ export default class ContentService extends BaseService{
                         }else{
                             this.vuecmfException('获取下拉选项失败')
                         }
-
-                        tableService.import_config.edit_form_ref.validate()
-
                     })
                 })
             }
 
         })
+
+        if(tableService.import_config.edit_form_ref != undefined){
+            tableService.import_config.edit_form_ref.validate()
+        }
+
     }
 
 
@@ -437,15 +425,19 @@ export default class ContentService extends BaseService{
      */
     loadForm = (tableService: AnyObject, select_row: AnyObject): boolean => {
         if(this.table_config.current_row != undefined) {
-            if(typeof select_row.model_id != 'undefined' && this.table_config.current_row.model_id != undefined){
+            if(['model_field','model_index','model_action','model_form'].indexOf(this.dialog_config.current_table_name) != -1){
+                select_row.model_id = this.table_config.current_row.id
+            }else if(['field_option','model_relation'].indexOf(this.dialog_config.current_table_name) != -1){
+                select_row.model_id = this.table_config.current_row.model_id
+                select_row.model_field_id = this.table_config.current_row.id
+            }else if(['model_form_rules'].indexOf(this.dialog_config.current_table_name) != -1){
+                select_row.model_id = this.table_config.current_row.model_id
+                select_row.model_form_id = this.table_config.current_row.id
+            }else if(['model_form_linkage'].indexOf(this.dialog_config.current_table_name) != -1){
                 select_row.model_id = this.table_config.current_row.model_id
             }
-            if(typeof select_row.model_field_id != 'undefined' && this.table_config.current_row.id != undefined){
-                select_row.model_field_id = this.table_config.current_row.id
-            }
-
-
         }
+
         this.loadFormOption(tableService, select_row)
 
         //设置表单中组件的change事件回调函数， 如在联动下拉框中使用
