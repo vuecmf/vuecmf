@@ -192,9 +192,6 @@ export default class ContentService extends BaseService{
                 break;
             case 'app_config':
                 this.event_obj.value = new AppConfigEvent(this, this.dataModel)
-                this.permission_config.modelNameCheckChange = this.event_obj.value.modelNameCheckChange
-                this.permission_config.actionCheckChange = this.event_obj.value.actionCheckChange
-                this.assign_config.saveAssignData = this.event_obj.value.saveAssignModels
                 break;
             default:
                 this.event_obj.value = new DefaultEvent()

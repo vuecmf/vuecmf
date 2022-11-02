@@ -187,7 +187,7 @@ export default class LayoutService extends BaseService{
 
         setTimeout(()=>{
             const current_route = router.currentRoute.value
-            const title = current_route.name
+            const title = current_route.meta.title
             const path = current_route.path.replace('/','')
             const main_menu_index = current_route.meta.top_mid as string
 

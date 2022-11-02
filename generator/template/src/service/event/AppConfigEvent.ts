@@ -9,7 +9,6 @@
 
 import BaseEvent from "@/service/event/BaseEvent";
 import {AnyObject} from "@/typings/vuecmf";
-import {ElMessage} from "element-plus";
 import store from "@/store";
 
 
@@ -54,73 +53,8 @@ export default class AppConfigEvent extends BaseEvent{
         this.table_event.tool_event = [
         ];
 
-        //表格行事件配置
-        this.table_event.row_event = [
-            { label: '设置模型', type:'primary', event: this.setModel, visible: true, showCallback: this.showCallback },
-        ];
-
-
-
     }
 
-    /**
-     * 是否显示表格行事件按钮
-     * @param row
-     */
-    showCallback = (row: AnyObject): boolean => true
-
-    /**
-     * 打开设置模型对话框
-     * @param selectRow
-     */
-    setModel = (selectRow:AnyObject): void => {
-        this.current_app = selectRow
-        this.dataService.assign_config.assigned_data = []
-        this.dataService.assign_config.assign_dlg_title = '设置(' + this.current_app.app_name + ')模型'
-        this.dataService.assign_config.is_internal = this.current_app.type == 10
-
-        this.dataModel.getAllModels(this.table_name).then((res:AnyObject) => {
-            if(res.status == 200 && res.data.code == 0){
-                res.data.data.forEach((item:AnyObject) => {
-                    item.disabled = false
-                })
-
-                this.dataService.assign_config.all_data = res.data.data
-
-                //获取已分配的模型
-                this.dataModel.getAssignModels(this.table_name, { app_id: this.current_app.id }).then((res2:AnyObject) => {
-                    if(res2.status == 200 && res2.data.code == 0){
-                        this.dataService.assign_config.assigned_data = res2.data.data
-                        this.dataService.assign_config.set_assign_dlg = true
-                    }else{
-                        ElMessage.error(res2.data.msg)
-                    }
-                })
-
-            }else{
-                ElMessage.error(res.data.msg)
-            }
-        })
-    }
-
-    /**
-     * 保存应用已分配的模型
-     */
-    saveAssignModels = (): false => {
-        this.dataModel.saveAssignModels(this.table_name, {
-            app_id: this.current_app.id,
-            model_id_list: this.dataService.assign_config.assigned_data
-        }).then((res:AnyObject) => {
-            if(res.status == 200 && res.data.code == 0){
-                ElMessage.success(res.data.msg)
-                this.dataService.assign_config.set_assign_dlg = false
-            }else{
-                ElMessage.error(res.data.msg)
-            }
-        })
-
-        return false
-    }
 
 
 }
