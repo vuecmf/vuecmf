@@ -41,7 +41,7 @@ module.exports = (api, options, rootOptions) => {
             "vue": "^3.2.0",
             "vue-router": "^4.0.0-0",
             "vue-vuecmf-dialog": "^1.4.2",
-            "vue3-vuecmf-table": "^1.13.8",
+            "vue3-vuecmf-table": "1.13.8",
             "vuex": "^4.0.0-0"
         },
         devDependencies: {
