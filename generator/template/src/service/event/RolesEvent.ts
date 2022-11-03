@@ -56,7 +56,7 @@ export default class RolesEvent extends BaseEvent{
     addSub = (selectRow:AnyObject, tableService: AnyObject): void => {
         tableService.addRow()
         tableService.loadDataService.loadTableField()
-        tableService.table_config.current_select_row.pid = selectRow.id
+        tableService.table_config.current_select_row.pid = selectRow.id.toString()
     }
 
     /**
@@ -68,7 +68,8 @@ export default class RolesEvent extends BaseEvent{
         this.dataService.permission_config.current_user_or_role = this.current_role.role_name
 
         this.setPermission({
-            role_name: this.current_role.role_name
+            role_name: this.current_role.role_name,
+            app_name: this.current_role.app_name
         })
     }
 
@@ -99,7 +100,7 @@ export default class RolesEvent extends BaseEvent{
                 this.dataService.assign_config.all_data = res.data.data
 
                 //获取已分配用户
-                this.dataModel.getAssignUsers(this.table_name, {role_name: this.current_role.role_name}).then((res2:AnyObject) => {
+                this.dataModel.getAssignUsers(this.table_name, {role_name: this.current_role.role_name, app_name: this.current_role.app_name}).then((res2:AnyObject) => {
                     if(res2.status == 200 && res2.data.code == 0){
                         this.dataService.assign_config.assigned_data = res2.data.data
                         this.dataService.assign_config.set_assign_dlg = true
@@ -122,7 +123,8 @@ export default class RolesEvent extends BaseEvent{
     saveAssignUsers = (): false => {
         this.dataModel.saveAssignUsers(this.table_name, {
             role_name: this.current_role.role_name,
-            userid_list: this.dataService.assign_config.assigned_data
+            userid_list: this.dataService.assign_config.assigned_data,
+            app_name: this.current_role.app_name
         }).then((res:AnyObject) => {
             if(res.status == 200 && res.data.code == 0){
                 ElMessage.success(res.data.msg)

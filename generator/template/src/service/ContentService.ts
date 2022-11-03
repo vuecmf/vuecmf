@@ -17,10 +17,8 @@ import DefaultEvent from "@/service/event/DefaultEvent";
 import RolesEvent from "@/service/event/RolesEvent";
 import AdminEvent from "@/service/event/AdminEvent";
 import ModelConfigEvent from "@/service/event/ModelConfigEvent";
-import AppConfigEvent from "@/service/event/AppConfigEvent";
 
 import store from "@/store";
-
 
 /**
  * 内容服务类
@@ -72,15 +70,14 @@ export default class ContentService extends BaseService{
     })
 
 
-    //分配角色/用户/模型 管理相关设置
+    //分配角色或用户管理相关设置
     assign_config = reactive({
-        set_assign_dlg: false,                        //是否显示设置对话框
+        set_assign_dlg: false,                        //是否显示设置用户或对话框
         assign_dlg_title: '',                         //对话框标题
-        all_data: [],                                 //所有用户/角色/模型
-        assigned_data: [],                            //已分配用户/角色/模型
-        is_internal: false,                           //是否为内置功能
+        all_data: [],                                 //所有用户或角色
+        assigned_data: [],                            //已分配用户或角色
 
-        saveAssignData: () => false,                  //保存分配的用户/角色/模型
+        saveAssignData: () => false,                  //保存分配的用户或角色
     })
 
     //模型设置管理相关配置
@@ -184,14 +181,11 @@ export default class ContentService extends BaseService{
                 this.event_obj.value = new AdminEvent(this, this.dataModel)
                 this.permission_config.modelNameCheckChange = this.event_obj.value.modelNameCheckChange
                 this.permission_config.actionCheckChange = this.event_obj.value.actionCheckChange
-                this.permission_config.savePermission = this.event_obj.value.saveUserPermission
                 this.assign_config.saveAssignData = this.event_obj.value.saveAssignRoles
+                this.permission_config.savePermission = this.event_obj.value.saveUserPermission
                 break;
             case 'model_config':
                 this.event_obj.value = new ModelConfigEvent(this, this.dataModel)
-                break;
-            case 'app_config':
-                this.event_obj.value = new AppConfigEvent(this, this.dataModel)
                 break;
             default:
                 this.event_obj.value = new DefaultEvent()
@@ -246,7 +240,7 @@ export default class ContentService extends BaseService{
         if(router.currentRoute.value.meta.table_name == 'model_config'){
             //获取关联模型信息的过滤设置
             if(typeof this.table_config.current_row != 'undefined'){
-                tableService.table_config.field_filter['model_id'] = this.table_config.current_row.id
+                tableService.table_config.field_filter['model_id'] = this.table_config.current_row.id.toString()
             }else{
                 tableService.table_config.field_filter['model_id'] = 0;
             }
@@ -263,11 +257,11 @@ export default class ContentService extends BaseService{
 
         //模型配置中的 设置字段、设置动作及表单列表的 过滤设置
         if(router.currentRoute.value.meta.table_name == 'model_config' && typeof this.table_config.current_row != 'undefined'){
-            this.dialogTableService.table_config.filter_form['model_id'] = this.table_config.current_row.id
+            this.dialogTableService.table_config.filter_form['model_id'] = this.table_config.current_row.id.toString()
 
             if(['model_index','model_form'].indexOf(this.dialog_config.current_table_name) != -1){
                 //获取关联模型信息的过滤设置
-                this.dialogTableService.table_config.field_filter['model_id'] = this.table_config.current_row.id
+                this.dialogTableService.table_config.field_filter['model_id'] = this.table_config.current_row.id.toString()
             }
         }
     }
@@ -283,22 +277,22 @@ export default class ContentService extends BaseService{
         //过滤设置
         if(typeof this.table_config.current_row != 'undefined' && router.currentRoute.value.meta.table_name == 'model_config'){
             //模型设置中的二级弹窗列表的搜索表单初始化
-            this.secondDialogTableService.table_config.filter_form['model_id'] = this.table_config.current_row.model_id
+            this.secondDialogTableService.table_config.filter_form['model_id'] = this.table_config.current_row.model_id.toString()
 
             switch (this.dialog_config.current_table_name){
                 case 'model_form_rules':
-                    this.secondDialogTableService.table_config.filter_form['model_form_id'] = this.table_config.current_row.id
+                    this.secondDialogTableService.table_config.filter_form['model_form_id'] = this.table_config.current_row.id.toString()
                     break;
                 case 'model_relation':
                 case 'field_option':
-                    this.secondDialogTableService.table_config.filter_form['model_field_id'] = this.table_config.current_row.id
+                    this.secondDialogTableService.table_config.filter_form['model_field_id'] = this.table_config.current_row.id.toString()
                     break;
                 default:
-                    this.secondDialogTableService.table_config.filter_form['model_field_id'] = this.table_config.current_row.model_field_id
+                    this.secondDialogTableService.table_config.filter_form['model_field_id'] = this.table_config.current_row.model_field_id.toString()
             }
 
             //获取关联模型信息的过滤设置
-            this.secondDialogTableService.table_config.field_filter['model_id'] = this.table_config.current_row.model_id
+            this.secondDialogTableService.table_config.field_filter['model_id'] = this.table_config.current_row.model_id.toString()
 
         }
     }
@@ -342,6 +336,7 @@ export default class ContentService extends BaseService{
      */
     loadFormOption = (tableService:AnyObject, select_row: AnyObject): void => {
         const linkage:AnyObject = tableService.table_config.relation_info.linkage
+
         Object.keys(linkage).forEach((field_id) => {
             let form_field_name = ''
             const form_info:AnyObject = tableService.table_config.form_info
@@ -352,66 +347,57 @@ export default class ContentService extends BaseService{
             })
 
             const sel_val = select_row != null && typeof select_row[form_field_name] != 'undefined' ? select_row[form_field_name] : ''
+            const data:AnyObject = {}
+            data[form_field_name] = sel_val
 
-            if(sel_val != ''){
-                const data:AnyObject = {}
-                data[form_field_name] = sel_val
+            const linkage_list:AnyObject = linkage[field_id]
 
-                const linkage_list:AnyObject = linkage[field_id]
+            Object.values(linkage_list).forEach((item)=>{
+                this.dataModel.request(item.action_table_name, item.action_type, {data: data}).then((res:AnyObject)=>{
+                    if(res.status == 200){
+                        if(res.data.code == 0){
+                            const form_list: string[] = []
+                            const res_list:AnyObject[] = []
 
-                Object.values(linkage_list).forEach((item)=>{
-                    this.dataModel.request(item.action_table_name, item.action_type, {data: data}).then((res:AnyObject)=>{
-                        if(res.status == 200){
-                            if(res.data.code == 0){
-                                const form_list: string[] = []
-                                const res_list:AnyObject[] = []
-
-                                if(res.data.data != null){
-                                    Object.keys(res.data.data).forEach((key) => {
-                                        form_list.push(res.data.data[key].value)
-                                        res_list.push(res.data.data[key])
-                                    })
+                            Object.keys(res.data.data).forEach((key) => {
+                                if(typeof res.data.data[key].id == 'number'){
+                                    res.data.data[key].id = res.data.data[key].id.toString()
                                 }
+                                form_list.push(res.data.data[key].id)
+                                res_list.push(res.data.data[key])
+                            })
 
-                                tableService.table_config.relation_info.options[item.relation_field_id] = res_list
+                            tableService.table_config.relation_info.options[item.relation_field_id] = res_list
 
-                                //先找到关联下拉框的字段名, 然后根据当前字段名找到当前选择的值，再在判断在拉取的下拉列表数据中是否存在， 不存在则删除当前选择的值
-                                const relation_field_name = typeof form_field_info[item.relation_field_id] != 'undefined' ? form_field_info[item.relation_field_id] : ''
-                                if(relation_field_name != '' && typeof select_row[relation_field_name] != 'undefined'){
-                                    if(typeof select_row[relation_field_name] == 'object'){
-                                        const tmp_sel:string[] = []
-                                        if(select_row[relation_field_name] != null){
-                                            select_row[relation_field_name].forEach((sub_id:string) => {
-                                                if(form_list.indexOf(sub_id) != -1){
-                                                    tmp_sel.push(sub_id)
-                                                }
-                                            })
-                                        }
-                                        select_row[relation_field_name] = tmp_sel
-                                    }else{
-                                        if(form_list.indexOf(select_row[relation_field_name]) == -1){
-                                            select_row[relation_field_name] = null
-                                        }
+                            //先找到关联下拉框的字段名, 然后根据当前字段名找到当前选择的值，再在判断在拉取的下拉列表数据中是否存在， 不存在则删除当前选择的值
+                            const relation_field_name = typeof form_field_info[item.relation_field_id] != 'undefined' ? form_field_info[item.relation_field_id] : ''
+                            if(relation_field_name != '' && typeof select_row[relation_field_name] != 'undefined'){
+                                if(typeof select_row[relation_field_name] == 'object'){
+                                    const tmp_sel:string[] = []
+                                    if(select_row[relation_field_name] != null){
+                                        select_row[relation_field_name].forEach((sub_id:string) => {
+                                            if(form_list.indexOf(sub_id) != -1){
+                                                tmp_sel.push(sub_id)
+                                            }
+                                        })
+                                    }
+                                    select_row[relation_field_name] = tmp_sel
+                                }else{
+                                    if(form_list.indexOf(select_row[relation_field_name]) == -1){
+                                        select_row[relation_field_name] = null
                                     }
                                 }
-
-                            }else{
-                                this.message.error('获取下拉选项失败:' + res.data.msg)
                             }
 
                         }else{
-                            this.vuecmfException('获取下拉选项失败')
+                            this.message.error('获取下拉选项失败:' + res.data.msg)
                         }
-                    })
+                    }else{
+                        this.vuecmfException('获取下拉选项失败')
+                    }
                 })
-            }
-
+            })
         })
-
-        if(tableService.import_config.edit_form_ref != undefined){
-            tableService.import_config.edit_form_ref.validate()
-        }
-
     }
 
 
@@ -421,20 +407,6 @@ export default class ContentService extends BaseService{
      * @param select_row
      */
     loadForm = (tableService: AnyObject, select_row: AnyObject): boolean => {
-        if(this.table_config.current_row != undefined) {
-            if(['model_field','model_index','model_action','model_form'].indexOf(this.dialog_config.current_table_name) != -1){
-                select_row.model_id = this.table_config.current_row.id
-            }else if(['field_option','model_relation'].indexOf(this.dialog_config.current_table_name) != -1){
-                select_row.model_id = this.table_config.current_row.model_id
-                select_row.model_field_id = this.table_config.current_row.id
-            }else if(['model_form_rules'].indexOf(this.dialog_config.current_table_name) != -1){
-                select_row.model_id = this.table_config.current_row.model_id
-                select_row.model_form_id = this.table_config.current_row.id
-            }else if(['model_form_linkage'].indexOf(this.dialog_config.current_table_name) != -1){
-                select_row.model_id = this.table_config.current_row.model_id
-            }
-        }
-
         this.loadFormOption(tableService, select_row)
 
         //设置表单中组件的change事件回调函数， 如在联动下拉框中使用

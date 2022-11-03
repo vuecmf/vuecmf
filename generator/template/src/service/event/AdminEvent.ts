@@ -81,7 +81,7 @@ export default class AdminEvent extends BaseEvent{
                 this.dataService.assign_config.all_data = res.data.data
 
                 //获取已分配用户
-                this.dataModel.getAssignRoles(this.table_name, {username: this.current_user.username}).then((res2:AnyObject) => {
+                this.dataModel.getAssignRoles(this.table_name, {username: this.current_user.username, app_name: 'vuecmf'}).then((res2:AnyObject) => {
                     if(res2.status == 200 && res2.data.code == 0){
                         this.dataService.assign_config.assigned_data = res2.data.data
                         this.dataService.assign_config.set_assign_dlg = true
@@ -104,7 +104,8 @@ export default class AdminEvent extends BaseEvent{
     saveAssignRoles = (): false => {
         this.dataModel.saveAssignRoles(this.table_name, {
             username: this.current_user.username,
-            role_id_list: this.dataService.assign_config.assigned_data
+            role_id_list: this.dataService.assign_config.assigned_data,
+            app_name: 'vuecmf'
         }).then((res:AnyObject) => {
             if(res.status == 200 && res.data.code == 0){
                 ElMessage.success(res.data.msg)
@@ -127,7 +128,8 @@ export default class AdminEvent extends BaseEvent{
         this.dataService.permission_config.current_user_or_role = this.current_user.username
 
         this.setPermission({
-            username: this.current_user.username
+            username: this.current_user.username,
+            app_name: 'vuecmf'
         }, 'user')
     }
 

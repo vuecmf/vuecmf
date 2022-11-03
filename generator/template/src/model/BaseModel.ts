@@ -94,7 +94,7 @@ export default abstract class Model {
         if(typeof api_maps[table_name] == 'undefined' || typeof api_maps[table_name][action_type] == 'undefined'){
             return await axios.request({
                 method: 'post',
-                url: '/vuecmf/model_action/get_api_map',
+                url: '/vuecmf/model_action/getApiMap',
                 data: {
                     data: {
                         table_name: table_name,

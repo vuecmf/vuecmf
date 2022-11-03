@@ -49,7 +49,7 @@ export default class DataModel extends BaseModel{
         const action_type = type == 'user' ? 'get_user_permission' : 'get_permission'
         return this.request(table_name, action_type, {data: data} )
     }
-
+    
 
     /**
      * 获取所有用户
@@ -95,7 +95,6 @@ export default class DataModel extends BaseModel{
         return this.request(table_name, 'get_roles', {data: data} )
     }
 
-
     /**
      * 保存用户分配的用户
      * @param table_name 模型表名
@@ -106,33 +105,6 @@ export default class DataModel extends BaseModel{
     }
 
     /**
-     * 获取所有模型
-     * @param table_name
-     */
-    public getAllModels = (table_name: string): Promise<AnyObject> => {
-        return this.request(table_name, 'get_all_models' )
-    }
-
-    /**
-     * 获取应用下的所有模型
-     * @param table_name 如 app_config
-     * @param data  如 {app_name: 'vuecmf'}
-     */
-    public getAssignModels = (table_name: string, data:AnyObject): Promise<AnyObject> => {
-        return this.request(table_name, 'get_models', {data: data} )
-    }
-
-    /**
-     * 保存应用分配的模型
-     * @param table_name 模型表名
-     * @param data 提交的数据
-     */
-    public saveAssignModels = (table_name: string, data:AnyObject): Promise<AnyObject> => {
-        return this.request(table_name, 'assign_model', {data: data} )
-    }
-
-
-    /**
      * 退出系统
      */
     public logout = (): Promise<AnyObject> => {
@@ -141,6 +113,6 @@ export default class DataModel extends BaseModel{
         }
         return this.request('admin', 'logout', {data: data})
     }
-
+    
 
 }

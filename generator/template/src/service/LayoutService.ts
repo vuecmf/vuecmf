@@ -65,9 +65,9 @@ export default class LayoutService extends BaseService{
                 //默认第一个主菜单项选中
                 if(typeof this.nav_menu_list.value != 'undefined'){
                     const main_menu_keys = Object.keys(this.nav_menu_list.value)
-                    if(main_menu_keys.length > 0) {
-                        this.main_menu_active.value = this.nav_menu_list.value[main_menu_keys[0]].mid
-                        this.selectMainMenu(this.main_menu_active.value)
+                    if(typeof main_menu_keys[0] != 'undefined'){
+                        this.main_menu_active.value = main_menu_keys[0]
+                        this.selectMainMenu(this.main_menu_active.value as string)
                     }
                 }
             })
@@ -75,14 +75,11 @@ export default class LayoutService extends BaseService{
             return Promise.resolve('router loaded')
 
         }).catch((res) => {
+
             if(res.code == 1003){
                 this.vuecmfException(res.msg)
-            }else if(res.msg != undefined){
-                ElMessage.error(res.msg)
-                return Promise.reject('')
             }else{
-                console.log(res)
-                ElMessage.error(res.toString())
+                ElMessage.error(res.msg)
                 return Promise.reject('')
             }
 
@@ -97,13 +94,13 @@ export default class LayoutService extends BaseService{
     loadRouter = (menuList: AnyObject|undefined):void => {
         if(typeof menuList != 'undefined'){
             for(const key in menuList){
-                if(typeof menuList[key].children != 'undefined' && menuList[key].children != null){
+                if(typeof menuList[key].component_tpl == 'undefined' && typeof menuList[key].children != 'undefined'){
                     this.loadRouter(menuList[key].children)
                 }else{
                     router.addRoute('home', {
                         path: menuList[key].mid,
                         component: () => import('@/views/' + menuList[key].component_tpl),
-                        name: menuList[key].path_name.join('-'),
+                        name: menuList[key].title,
                         meta: {
                             default_action_type: menuList[key].default_action_type, //模型的默认动作类型
                             table_name: menuList[key].table_name,  //模型表名
@@ -144,7 +141,6 @@ export default class LayoutService extends BaseService{
      * 设置当前选中的Tab在可见区域
      */
     private tabVisible = ():void => {
-        if(this.vuecmf_tabs.value == undefined) return
         const tabs_main_width = this.vuecmf_tabs.value.$refs.vuecmf_tabs_main.offsetWidth
         if((this.current_tab_index.value as number + 1) * this.tag_width.value > tabs_main_width){
             this.scroll_nun.value = -(this.current_tab_index.value as number )
@@ -187,7 +183,7 @@ export default class LayoutService extends BaseService{
 
         setTimeout(()=>{
             const current_route = router.currentRoute.value
-            const title = current_route.meta.title
+            const title = current_route.name
             const path = current_route.path.replace('/','')
             const main_menu_index = current_route.meta.top_mid as string
 
@@ -255,7 +251,6 @@ export default class LayoutService extends BaseService{
      * @param event_name  事件名
      */
     autoTabArrow = (event_name?: string):void => {
-        if(this.vuecmf_tabs.value == undefined) return
         const tabs_wrap_width = this.vuecmf_tabs.value.$refs.vuecmf_tabs_wrap.offsetWidth
         const tabs_main_width = this.vuecmf_tabs.value.$refs.vuecmf_tabs_main.offsetWidth
 
@@ -360,12 +355,8 @@ export default class LayoutService extends BaseService{
      */
     selectMainMenu = (index: string):void => {
         //加载侧边菜单
-        if(this.nav_menu_list.value != undefined) {
-            Object.keys(this.nav_menu_list.value).forEach((key) => {
-                if(this.nav_menu_list.value != undefined && this.nav_menu_list.value[key] != undefined && this.nav_menu_list.value[key].mid == index){
-                    this.aside_menu_list.value = this.nav_menu_list.value[key].children
-                }
-            })
+        if(typeof this.nav_menu_list.value != 'undefined' && typeof this.nav_menu_list.value[index] != 'undefined'){
+            this.aside_menu_list.value = this.nav_menu_list.value[index].children
         }
         //加载面包屑列表
         this.setBreadcrumbList()
