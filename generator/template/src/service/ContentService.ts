@@ -432,6 +432,7 @@ export default class ContentService extends BaseService{
                 select_row.model_form_id = this.table_config.current_row.id
             }else if(['model_form_linkage'].indexOf(this.dialog_config.current_table_name) != -1){
                 select_row.model_id = this.table_config.current_row.model_id
+                select_row.model_field_id = this.table_config.current_row.model_field_id
             }
         }
 

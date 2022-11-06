@@ -271,7 +271,7 @@ export default class ModelConfigEvent extends BaseEvent{
 
                 if(field_id != '' && typeof this.dataService.dialogTableService.table_config.relation_info.options[field_id] == 'object'){
                     this.dataService.dialogTableService.table_config.relation_info.options[field_id].forEach((row:AnyObject) => {
-                        if(row.id == model_field_id)  label = row.label
+                        if(row.value == model_field_id)  label = row.label
                     })
                 }
 
