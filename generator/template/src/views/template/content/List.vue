@@ -289,4 +289,5 @@ export default defineComponent({
 .cell{
   .el-button{ margin: 3px;}
 }
+.el-icon{ font-size: 15px !important;}
 </style>
