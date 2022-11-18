@@ -136,8 +136,8 @@ export default defineComponent({
 .el-breadcrumb__separator.el-icon{
   color: #909399;
 }
-.el-dialog__headerbtn{
-  right: -5px !important;
+.el-dialog__header .min_btn{
+  line-height: 8px; display: inline-flex;
 }
 </style>
 <style lang="scss" scoped>
