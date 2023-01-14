@@ -6,7 +6,7 @@
 // | Author: vuecmf <tulihua2004@126.com>
 // +----------------------------------------------------------------------
 
-import axios, {Method} from "axios";
+import axios, {AxiosInstance, Method} from "axios";
 import qs from "qs";
 import {AnyObject} from "@/typings/vuecmf";
 import store from '@/store';
@@ -18,20 +18,24 @@ import store from '@/store';
 export default abstract class Model {
 
     public token: string  //登录后的token
+    public httpAxios: AxiosInstance
 
     constructor() {
-        axios.defaults.baseURL = process.env.VUE_APP_BASE_API
-        axios.defaults.timeout = 5000
+        this.httpAxios = axios.create()
+        this.httpAxios.defaults.timeout = 30000
+
+        this.httpAxios.defaults.baseURL = process.env.VUE_APP_BASE_API
+
         //允许跨域携带cookie信息
-        axios.defaults.withCredentials = true
-        axios.defaults.headers.get['Content-Type'] = 'application/x-www-form-urlencoded;charset=utf-8'
-        axios.defaults.headers.post['Content-Type'] = 'application/json;charset=UTF-8'
+        this.httpAxios.defaults.withCredentials = true
+        this.httpAxios.defaults.headers.get['Content-Type'] = 'application/x-www-form-urlencoded;charset=utf-8'
+        this.httpAxios.defaults.headers.post['Content-Type'] = 'application/json;charset=UTF-8'
 
         this.token = localStorage.getItem('vuecmf_token') as string
-        axios.defaults.headers.common['token'] = this.token
+        this.httpAxios.defaults.headers.common['token'] = this.token
 
         //请求拦截
-        axios.interceptors.request.use((config) => {
+        this.httpAxios.interceptors.request.use((config) => {
             if(config.method === "post" || config.method === "put" || config.method === "delete"){
                 // qs序列化
                 config.data = qs.parse(config.data)
@@ -42,7 +46,7 @@ export default abstract class Model {
         })
 
         //响应拦截
-        axios.interceptors.response.use((config) => {
+        this.httpAxios.interceptors.response.use((config) => {
             if (config.status === 200 || config.status === 204) {
                 return Promise.resolve(config);
             } else {
@@ -60,7 +64,7 @@ export default abstract class Model {
      * @param data
      */
     public async get(url: string, data: AnyObject): Promise<AnyObject> {
-        return await axios.request({
+        return await this.httpAxios.request({
             method: 'get',
             url,
             data: data,
@@ -73,7 +77,7 @@ export default abstract class Model {
      * @param data
      */
     public async post(url: string, data: AnyObject): Promise<AnyObject> {
-        return await axios.request({
+        return await this.httpAxios.request({
             method: 'post',
             url,
             data: data,
@@ -92,7 +96,7 @@ export default abstract class Model {
         const api_maps = store.getters.apiMaps
 
         if(typeof api_maps[table_name] == 'undefined' || typeof api_maps[table_name][action_type] == 'undefined'){
-            return await axios.request({
+            return await this.httpAxios.request({
                 method: 'post',
                 url: '/vuecmf/model_action/get_api_map',
                 data: {
@@ -106,7 +110,7 @@ export default abstract class Model {
                     if(typeof api_maps[table_name] == 'undefined') api_maps[table_name] = []
                     api_maps[table_name][action_type] = res.data.data
                     await store.dispatch('setApiMaps', api_maps)
-                    return await axios.request({
+                    return await this.httpAxios.request({
                         method: method,
                         url: res.data.data,
                         data: data,
@@ -117,11 +121,30 @@ export default abstract class Model {
             })
 
         }else{
-            return await axios.request({
+            let req_data = {
                 method: method,
                 url: api_maps[table_name][action_type],
                 data: data,
-            })
+            }
+
+            if(method.toLowerCase() === 'get')  {
+                const params_arr:string[] = []
+                let params = ''
+                if(data){
+                    Object.keys(data).forEach((key) => {
+                        params_arr.push(key + '=' + data[key])
+                    })
+                    params = '?' + params_arr.join('&')
+                }
+
+                req_data = {
+                    method: method,
+                    url: api_maps[table_name][action_type] + params,
+                    data: {},
+                }
+            }
+
+            return await this.httpAxios.request(req_data)
         }
     }
 
@@ -138,6 +161,21 @@ export default abstract class Model {
             return ''
         }
     }
+
+    /**
+     * 根据模型表名及动作类型获取完整API请求URL
+     * @param table_name
+     * @param action_type
+     */
+    public getFullApiUrl = (table_name: string,action_type: string): string => {
+        const api_maps = store.getters.apiMaps
+        if(typeof api_maps[table_name] != 'undefined' && typeof api_maps[table_name][action_type] != 'undefined'){
+            return this.httpAxios.defaults.baseURL + api_maps[table_name][action_type]
+        }else{
+            return ''
+        }
+    }
+
 
     /**
      * 获取用户登录信息
