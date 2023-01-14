@@ -54,7 +54,7 @@ export default class ContentService extends BaseService{
         default_expand_all: true,               //树形列表默认是否全部展开
 
         show_checkbox: false,                   //是否显示行选择框
-        selectable: ()=> false                  //设置列表每行是否可选择的回调函数
+        selectable: ():boolean => false         //设置列表每行是否可选择的回调函数
     })
 
     //权限项管理相关设置
