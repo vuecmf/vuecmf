@@ -2,6 +2,7 @@
 VueCMF内容管理快速开发框架v2(前端)
 
 v2.0.x  https://gitee.com/emei/vuecmf
+
 v2.1.x  https://gitee.com/emei/vuecmf-web
 
 # 项目介绍
