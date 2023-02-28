@@ -17,10 +17,12 @@ Go版   https://gitee.com/emei/vuecmf-go
 
 
 # 项目介绍
-VueCMF是一款完全开源免费的内容管理快速开发框架。采用前后端分离模式构建，2.0+版本前端使用vue3、Element Plus和TypeScript构建，后端API基于ThinkPHP6开发。可用于快速开发CMS、CRM、WMS、OMS、ERP等管理系统，开发简单、高效易用，极大减少系统的开发周期和研发成本！甚至不用写一行代码使用VueCMF就能设计出功能强大的后台管理系统。
+VueCMF是一款完全开源免费的内容管理快速开发框架。采用前后端分离模式搭建，2.1+版本前端使用vue3、Element Plus和TypeScript构建，后端API的PHP版基于ThinkPHP6开发，Go版基于Gin开发。可用于快速开发CMS、CRM、WMS、OMS、ERP等管理系统，开发简单、高效易用，极大减少系统的开发周期和研发成本！甚至不用写一行代码就能设计出功能强大的管理系统。
 
 # 示例演示
 - [vuecmf示例演示](http://www.vuecmf.com/)
+
+注意：下面的操作是v2.0.x的安装使用，v2.1.x的使用请查看https://gitee.com/emei/vuecmf-web
 
 # 开始使用
 ## 安装运行环境
