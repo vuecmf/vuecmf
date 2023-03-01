@@ -1,17 +1,29 @@
 # vuecmf
 VueCMF内容管理快速开发框架v2
 
-前端：
+## 前端：
+#### v2.0.x:
+github https://github.com/vuecmf/vuecmf
 
-v2.0.x  https://gitee.com/emei/vuecmf
+gitee  https://gitee.com/emei/vuecmf
 
-v2.1.x  https://gitee.com/emei/vuecmf-web
+#### v2.1.x:
+github https://github.com/vuecmf/vuecmf-web
 
-后端：
+gitee https://gitee.com/emei/vuecmf-web
 
-PHP版  https://gitee.com/emei/vuecmf-php
 
-Go版   https://gitee.com/emei/vuecmf-go
+## 后端：
+
+#### PHP版:
+github https://github.com/vuecmf/vuecmf-php
+
+gitee https://gitee.com/emei/vuecmf-php
+
+#### Go版:
+github https://github.com/vuecmf/vuecmf-go
+
+gitee https://gitee.com/emei/vuecmf-go
 
 注意：前端v2.0.x与后端v2.0.x匹配, 前端v2.1.x与后端v2.1.x匹配
 
