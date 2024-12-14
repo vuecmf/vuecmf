@@ -9,7 +9,7 @@ VueCMF是一款完全开源免费的内容管理快速开发框架。采用前�
 
 
 ## 前端：
-#### v2.0.x:
+
 github https://github.com/vuecmf/vuecmf-web
 
 gitee https://gitee.com/emei/vuecmf-web
